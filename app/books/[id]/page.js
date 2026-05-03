@@ -38,6 +38,15 @@ export default function BookDetailPage() {
       toast.error("This book is currently unavailable!");
       return;
     }
+    const key = `borrowed_${session.user.email}`;
+    const existing = JSON.parse(localStorage.getItem(key) || "[]");
+    const alreadyBorrowed = existing.find((b) => b.id === book.id);
+    if (alreadyBorrowed) {
+      toast.error("তুমি এই বইটা আগেই borrow করেছ!");
+      return;
+    }
+    const updated = [...existing, { id: book.id, title: book.title, author: book.author }];
+    localStorage.setItem(key, JSON.stringify(updated));
     toast.success(`🎉 Successfully borrowed "${book.title}"!`);
   };
 
@@ -50,7 +59,6 @@ export default function BookDetailPage() {
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-        {/* Left — Book Cover */}
         <div className="relative">
           <div className="rounded-2xl overflow-hidden shadow-2xl" style={{ background: "#161b22", border: "1px solid #30363d" }}>
             <img
@@ -65,7 +73,6 @@ export default function BookDetailPage() {
           <div className="absolute -bottom-4 -right-4 w-full h-full rounded-2xl -z-10" style={{ border: "1px solid rgba(245,158,11,0.2)" }} />
         </div>
 
-        {/* Right — Details */}
         <div>
           <div className="flex items-center gap-3 mb-4">
             <span className="badge text-sm px-3 py-1.5" style={{ background: cat.bg, color: cat.color }}>
@@ -88,7 +95,6 @@ export default function BookDetailPage() {
 
           <p className="text-gray-400 leading-relaxed mb-8 text-base">{book.description}</p>
 
-          {/* Stats */}
           <div className="grid grid-cols-2 gap-4 mb-8">
             <div className="p-4 rounded-xl" style={{ background: "#161b22", border: "1px solid #30363d" }}>
               <div className="flex items-center gap-2 mb-1">
@@ -106,7 +112,6 @@ export default function BookDetailPage() {
             </div>
           </div>
 
-          {/* Borrow Button */}
           <button
             onClick={handleBorrow}
             className="btn-primary w-full justify-center text-base py-4"
