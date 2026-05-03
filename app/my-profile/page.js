@@ -2,19 +2,27 @@
 import { useSession, signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { User, Mail, Edit, LogOut, BookOpen, Shield } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function MyProfilePage() {
   const { data: session, isPending } = useSession();
   const router = useRouter();
+  const [borrowedBooks, setBorrowedBooks] = useState([]);
 
   useEffect(() => {
     if (!isPending && !session) {
       router.push("/login");
     }
   }, [session, isPending, router]);
+
+  useEffect(() => {
+    if (session) {
+      const stored = localStorage.getItem(`borrowed_${session.user.email}`);
+      if (stored) setBorrowedBooks(JSON.parse(stored));
+    }
+  }, [session]);
 
   const handleLogout = async () => {
     await signOut();
@@ -88,18 +96,29 @@ export default function MyProfilePage() {
                   <p className="text-white font-medium">{user.email}</p>
                 </div>
               </div>
-              {user.image && (
-                <div className="flex items-center gap-4 p-4 rounded-xl" style={{ background: "#21262d" }}>
-                  <BookOpen size={18} className="text-gray-400" />
-                  <div>
-                    <p className="text-xs text-gray-500 mb-0.5">Profile Photo</p>
-                    <a href={user.image} target="_blank" rel="noreferrer" className="text-amber-400 text-sm hover:underline truncate block max-w-xs">
-                      View Photo
-                    </a>
-                  </div>
-                </div>
-              )}
             </div>
+          </div>
+
+          {/* Borrowed Books */}
+          <div className="p-6 rounded-2xl" style={{ background: "#161b22", border: "1px solid #30363d" }}>
+            <h3 className="font-bold text-white mb-4 flex items-center gap-2">
+              <BookOpen size={18} className="text-amber-400" /> Borrowed Books
+            </h3>
+            {borrowedBooks.length === 0 ? (
+              <p className="text-gray-400 text-sm">এখনো কোনো বই borrow করোনি।</p>
+            ) : (
+              <div className="space-y-3">
+                {borrowedBooks.map((book, index) => (
+                  <div key={index} className="flex items-center gap-4 p-4 rounded-xl" style={{ background: "#21262d" }}>
+                    <BookOpen size={18} className="text-amber-400" />
+                    <div>
+                      <p className="text-white font-medium">{book.title}</p>
+                      <p className="text-xs text-gray-400">{book.author}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="p-6 rounded-2xl" style={{ background: "#161b22", border: "1px solid #30363d" }}>
