@@ -45,7 +45,12 @@ export default function BookDetailPage() {
       toast.error("তুমি এই বইটা আগেই borrow করেছ!");
       return;
     }
-    const updated = [...existing, { id: book.id, title: book.title, author: book.author }];
+    const updated = [...existing, {
+      id: book.id,
+      title: book.title,
+      author: book.author,
+      borrowedAt: new Date().toLocaleString("en-GB", { timeZone: "Asia/Dhaka", day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })
+    }];
     localStorage.setItem(key, JSON.stringify(updated));
     toast.success(`🎉 Successfully borrowed "${book.title}"!`);
   };
