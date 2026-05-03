@@ -24,6 +24,14 @@ export default function MyProfilePage() {
     }
   }, [session]);
 
+  const handleReturn = (bookId) => {
+    const key = `borrowed_${session.user.email}`;
+    const updated = borrowedBooks.filter((b) => b.id !== bookId);
+    localStorage.setItem(key, JSON.stringify(updated));
+    setBorrowedBooks(updated);
+    toast.success("বই return করা হয়েছে!");
+  };
+
   const handleLogout = async () => {
     await signOut();
     toast.success("Logged out successfully!");
@@ -102,19 +110,28 @@ export default function MyProfilePage() {
           {/* Borrowed Books */}
           <div className="p-6 rounded-2xl" style={{ background: "#161b22", border: "1px solid #30363d" }}>
             <h3 className="font-bold text-white mb-4 flex items-center gap-2">
-              <BookOpen size={18} className="text-amber-400" /> Borrowed Books
+              <BookOpen size={18} className="text-amber-400" /> Borrowed Books ({borrowedBooks.length})
             </h3>
             {borrowedBooks.length === 0 ? (
               <p className="text-gray-400 text-sm">এখনো কোনো বই borrow করোনি।</p>
             ) : (
               <div className="space-y-3">
                 {borrowedBooks.map((book, index) => (
-                  <div key={index} className="flex items-center gap-4 p-4 rounded-xl" style={{ background: "#21262d" }}>
-                    <BookOpen size={18} className="text-amber-400" />
-                    <div>
-                      <p className="text-white font-medium">{book.title}</p>
-                      <p className="text-xs text-gray-400">{book.author}</p>
+                  <div key={index} className="flex items-center justify-between gap-4 p-4 rounded-xl" style={{ background: "#21262d" }}>
+                    <div className="flex items-center gap-3">
+                      <BookOpen size={18} className="text-amber-400" />
+                      <div>
+                        <p className="text-white font-medium">{book.title}</p>
+                        <p className="text-xs text-gray-400">{book.author}</p>
+                      </div>
                     </div>
+                    <button
+                      onClick={() => handleReturn(book.id)}
+                      className="text-xs px-3 py-1.5 rounded-lg font-medium"
+                      style={{ background: "rgba(239,68,68,0.1)", color: "#f87171", border: "1px solid rgba(239,68,68,0.3)" }}
+                    >
+                      Return
+                    </button>
                   </div>
                 ))}
               </div>
