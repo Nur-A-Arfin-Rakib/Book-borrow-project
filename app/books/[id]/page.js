@@ -45,6 +45,10 @@ export default function BookDetailPage() {
       toast.error("তুমি এই বইটা আগেই borrow করেছ!");
       return;
     }
+    if (existing.length >= 3) {
+      toast.error("সর্বোচ্চ ৩টা বই borrow করা যাবে! আগে একটা return করো।");
+      return;
+    }
     const updated = [...existing, {
       id: book.id,
       title: book.title,
