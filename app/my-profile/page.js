@@ -58,7 +58,6 @@ export default function MyProfilePage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Profile Card */}
         <div className="md:col-span-1">
           <div className="p-6 rounded-2xl text-center" style={{ background: "#161b22", border: "1px solid #30363d" }}>
             {user.image ? (
@@ -83,7 +82,6 @@ export default function MyProfilePage() {
           </div>
         </div>
 
-        {/* Info Cards */}
         <div className="md:col-span-2 space-y-4">
           <div className="p-6 rounded-2xl" style={{ background: "#161b22", border: "1px solid #30363d" }}>
             <h3 className="font-bold text-white mb-4 flex items-center gap-2">
@@ -107,7 +105,6 @@ export default function MyProfilePage() {
             </div>
           </div>
 
-          {/* Borrowed Books */}
           <div className="p-6 rounded-2xl" style={{ background: "#161b22", border: "1px solid #30363d" }}>
             <h3 className="font-bold text-white mb-4 flex items-center gap-2">
               <BookOpen size={18} className="text-amber-400" /> Borrowed Books ({borrowedBooks.length})
@@ -123,6 +120,9 @@ export default function MyProfilePage() {
                       <div>
                         <p className="text-white font-medium">{book.title}</p>
                         <p className="text-xs text-gray-400">{book.author}</p>
+                        {book.borrowedAt && (
+                          <p className="text-xs text-gray-500 mt-0.5">📅 {book.borrowedAt}</p>
+                        )}
                       </div>
                     </div>
                     <button
